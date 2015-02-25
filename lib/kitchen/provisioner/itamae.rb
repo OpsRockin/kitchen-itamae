@@ -10,14 +10,20 @@ module Kitchen
       default_config :parasite_chef_omnibus, true
       default_config :chef_omnibus_url, "https://www.chef.io/chef/install.sh"
       default_config :chef_omnibus_root, "/opt/chef"
+      default_config :chef_omnibus_bin_dir, "/opt/chef/embedded/bin"
       default_config :chef_omnibus_install_options, nil
 
       default_config :itamae_root, "kitchen"
       default_config :recipe_list, []
       default_config :node_json, nil
-      default_config :sudo_command, 'sudo'
       default_config :with_ohai, false
       default_config :itamae_option, nil
+      default_config :itamae_plugins, []
+
+      def initialize(config = {})
+        debug(JSON.pretty_generate(config))
+        init_config(config)
+      end
 
       # (see Base#create_sandbox)
       def create_sandbox
@@ -27,16 +33,21 @@ module Kitchen
 
       # (see Base#init_command)
       def init_command
-        cmd = "#{sudo("rm")} -rf #{config[:root_path]} ; mkdir -p #{config[:root_path]}"
-        Util.wrap_command(cmd)
+        cmd = []
+        cmd << "#{sudo("rm")} -rf #{config[:root_path]} ; mkdir -p #{config[:root_path]}"
+        debug("Cleanup Kitchen Root")
+        config[:itamae_plugins].map do |plugin|
+          cmd << "#{sudo(File.join(config[:chef_omnibus_bin_dir], "gem"))} install itamae-plugin-recipe-#{plugin} --no-ri --no-rdoc"
+        end
+        Util.wrap_command(cmd.join("\n"))
       end
 
       # (see Base#run_command)
       def run_command
-        config.merge!(config[:config])
+        debug(instance.inspect)
         debug(JSON.pretty_generate(config))
         runlist = config[:recipe_list].map do |recipe|
-          cmd = ["cd #{config[:root_path]};", config[:sudo_command] , 'itamae']
+          cmd = ["cd #{config[:root_path]};", sudo('itamae')]
           cmd << 'local'
           cmd << '--ohai' if config[:with_ohai]
           cmd << config[:itamae_option]
