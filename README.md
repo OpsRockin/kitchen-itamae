@@ -1,6 +1,7 @@
 # Kitchen::Itamae
 
-TODO: Write a gem description
+itamae provisioner for test-kitchen
+
 
 ## Installation
 
@@ -20,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+https://github.com/OpsRockin/kitchen-itamae_playground
 
 ## Contributing
 

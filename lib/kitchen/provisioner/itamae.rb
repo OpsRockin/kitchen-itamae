@@ -24,9 +24,9 @@ module Kitchen
         FileUtils.cp_r(Dir.glob("kitchen/*"), sandbox_path)
       end
 
-      def cleanup_sandbox
-        nil
-      end
+#      def cleanup_sandbox
+#        nil
+#      end
 
       # (see Base#run_command)
       def run_command
