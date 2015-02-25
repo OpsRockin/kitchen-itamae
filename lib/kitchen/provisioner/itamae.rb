@@ -1,5 +1,5 @@
 require 'json'
-require "kitchen/itamae/version"
+require "kitchen-itamae/version"
 require 'kitchen/provisioner/base'
 
 module Kitchen
