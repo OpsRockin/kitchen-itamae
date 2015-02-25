@@ -1,5 +1,7 @@
 # Kitchen::Itamae
 
+[![Gem Version](https://badge.fury.io/rb/kitchen-itamae.svg)](http://badge.fury.io/rb/kitchen-itamae)
+
 itamae provisioner for test-kitchen
 
 
