@@ -15,28 +15,36 @@ module Kitchen
       default_config :itamae_root, "kitchen"
       default_config :recipe_list, []
       default_config :node_json, nil
+      default_config :sudo_command, 'sudo'
+      default_config :with_ohai, false
+      default_config :itamae_option, nil
 
       # (see Base#create_sandbox)
       def create_sandbox
         super
-#        prepare_data
-#        prepare_script
         FileUtils.cp_r(Dir.glob("kitchen/*"), sandbox_path)
       end
 
-#      def cleanup_sandbox
-#        nil
-#      end
+      # (see Base#init_command)
+      def init_command
+        cmd = "#{sudo("rm")} -rf #{config[:root_path]} ; mkdir -p #{config[:root_path]}"
+        Util.wrap_command(cmd)
+      end
 
       # (see Base#run_command)
       def run_command
-        runlist = config[:config][:recipe_list].map do |recipe|
-          cmd = ["cd #{config[:root_path]};", "sudo" , 'itamae']
+        config.merge!(config[:config])
+        debug(JSON.pretty_generate(config))
+        runlist = config[:recipe_list].map do |recipe|
+          cmd = ["cd #{config[:root_path]};", config[:sudo_command] , 'itamae']
           cmd << 'local'
-          cmd << "-j #{config[:config][:node_json]}" if config[:config][:node_json]
+          cmd << '--ohai' if config[:with_ohai]
+          cmd << config[:itamae_option]
+          cmd << "-j #{config[:node_json]}" if config[:node_json]
           cmd << recipe
           cmd.join(" ")
         end
+        debug(runlist.join("\n"))
         Util.wrap_command(runlist.join("\n"))
       end
 
