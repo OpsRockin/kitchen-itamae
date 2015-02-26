@@ -13,22 +13,21 @@ module Kitchen
       default_config :chef_omnibus_bin_dir, "/opt/chef/embedded/bin"
       default_config :chef_omnibus_install_options, nil
 
-      default_config :itamae_root, "kitchen"
+      default_config :itamae_root do |provisioner|
+        provisioner.calculate_path("kitchen")
+      end
+      expand_path_for :itamae_root
+
       default_config :recipe_list, []
       default_config :node_json, nil
       default_config :with_ohai, false
       default_config :itamae_option, nil
       default_config :itamae_plugins, []
 
-      def initialize(config = {})
-        debug(JSON.pretty_generate(config))
-        init_config(config)
-      end
-
       # (see Base#create_sandbox)
       def create_sandbox
         super
-        FileUtils.cp_r(Dir.glob("kitchen/*"), sandbox_path)
+        FileUtils.cp_r(Dir.glob("#{config[:itamae_root]}/*"), sandbox_path)
       end
 
       # (see Base#init_command)
@@ -44,7 +43,6 @@ module Kitchen
 
       # (see Base#run_command)
       def run_command
-        debug(instance.inspect)
         debug(JSON.pretty_generate(config))
         runlist = config[:recipe_list].map do |recipe|
           cmd = ["cd #{config[:root_path]};", sudo('/opt/chef/bin/itamae')]

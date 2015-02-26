@@ -1,5 +1,10 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.0.5
+
+- Cleanup: update itamae_root behavior.
+- Cleanup: remove few debug output.
+
 ## 0.0.4
 
 - Bugfix: itamae not found on centos6.
