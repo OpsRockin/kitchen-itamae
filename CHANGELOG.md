@@ -1,5 +1,9 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.0.3
+
+- use chef-apply for install itamae-plugins
+
 ## 0.0.2
 
 - cleanup code

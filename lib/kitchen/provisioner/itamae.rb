@@ -37,7 +37,7 @@ module Kitchen
         cmd << "#{sudo("rm")} -rf #{config[:root_path]} ; mkdir -p #{config[:root_path]}"
         debug("Cleanup Kitchen Root")
         config[:itamae_plugins].map do |plugin|
-          cmd << "#{sudo(File.join(config[:chef_omnibus_bin_dir], "gem"))} install itamae-plugin-recipe-#{plugin} --no-ri --no-rdoc"
+          cmd << %Q{#{sudo('chef-apply')} -e "chef_gem %Q{itamae-plugin-recipe-#{plugin}} do action :upgrade end"}
         end
         Util.wrap_command(cmd.join("\n"))
       end
