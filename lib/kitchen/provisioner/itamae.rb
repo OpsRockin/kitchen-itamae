@@ -18,7 +18,6 @@ module Kitchen
       end
       expand_path_for :itamae_root
 
-      default_config :recipe_list, []
       default_config :node_json, nil
       default_config :with_ohai, false
       default_config :itamae_option, nil
@@ -44,7 +43,7 @@ module Kitchen
       # (see Base#run_command)
       def run_command
         debug(JSON.pretty_generate(config))
-        runlist = config[:recipe_list].map do |recipe|
+        runlist = config[:run_list].map do |recipe|
           cmd = ["cd #{config[:root_path]};", sudo('/opt/chef/bin/itamae')]
           cmd << 'local'
           cmd << '--ohai' if config[:with_ohai]

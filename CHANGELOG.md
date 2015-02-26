@@ -1,5 +1,10 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.1.0
+
+- Use run_list instead of recipe_list.
+    - the `run_list` will merge both platforms and suites by data_munger.
+
 ## 0.0.5
 
 - Cleanup: update itamae_root behavior.
