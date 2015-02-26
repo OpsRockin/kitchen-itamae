@@ -1,5 +1,9 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.0.4
+
+- Bugfix: itamae not found on centos6.
+
 ## 0.0.3
 
 - use chef-apply for install itamae-plugins(idempotent operation).

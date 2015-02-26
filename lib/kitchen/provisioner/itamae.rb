@@ -47,7 +47,7 @@ module Kitchen
         debug(instance.inspect)
         debug(JSON.pretty_generate(config))
         runlist = config[:recipe_list].map do |recipe|
-          cmd = ["cd #{config[:root_path]};", sudo('itamae')]
+          cmd = ["cd #{config[:root_path]};", sudo('/opt/chef/bin/itamae')]
           cmd << 'local'
           cmd << '--ohai' if config[:with_ohai]
           cmd << config[:itamae_option]
@@ -106,12 +106,11 @@ module Kitchen
 
       def itamae_install_function
         <<-INSTALL_ITAMAE
-         cat <<EOL > /tmp/install_itamae.sh
-         [ -f /usr/local/bin/itamae ] && exit
-         /opt/chef/embedded/bin/gem install itamae --no-ri --no-rdoc
-         ln -sf /opt/chef/embedded/bin/itamae /usr/local/bin/
+        cat <<EOL > /tmp/install_itamae.sh
+        %Q{#{sudo('chef-apply')} -e "chef_gem %Q{itamae} do action :upgrade end"}
+        ln -sf /opt/chef/embedded/bin/itamae /opt/chef/bin/itamae
 EOL
-         #{sudo("sh")} /tmp/install_itamae.sh
+        #{sudo("sh")} /tmp/install_itamae.sh
         INSTALL_ITAMAE
       end
     end
