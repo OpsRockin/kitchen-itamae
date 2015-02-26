@@ -2,7 +2,7 @@ CHANGELOG of Itamae::Kitchen
 
 ## 0.0.3
 
-- use chef-apply for install itamae-plugins
+- use chef-apply for install itamae-plugins(idempotent operation).
 
 ## 0.0.2
 
