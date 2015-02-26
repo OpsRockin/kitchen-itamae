@@ -21,7 +21,10 @@ module Kitchen
       default_config :node_json, nil
       default_config :with_ohai, false
       default_config :itamae_option, nil
-      default_config :itamae_plugins, []
+      default_config :use_bundler do |provisioner|
+        config = provisioner.instance_variable_get(:@config)
+        File.exists?(File.join(config[:itamae_root], 'Gemfile'))
+      end
 
       # (see Base#create_sandbox)
       def create_sandbox
@@ -34,17 +37,31 @@ module Kitchen
         cmd = []
         cmd << "#{sudo("rm")} -rf #{config[:root_path]} ; mkdir -p #{config[:root_path]}"
         debug("Cleanup Kitchen Root")
-        config[:itamae_plugins].map do |plugin|
-          cmd << %Q{#{sudo('chef-apply')} -e "chef_gem %Q{itamae-plugin-recipe-#{plugin}} do action :upgrade end"}
-        end
+        Util.wrap_command(cmd.join("\n"))
+      end
+
+      # (see Base#init_command)
+      def prepare_command
+        return nil unless config[:use_bundler]
+        debug("Prepare Bundler")
+        cmd = ["cd #{config[:root_path]};"]
+        cmd << "if [ -f Gemfile ] ;then"
+        cmd << "#{sudo("/opt/chef/embedded/bin/bundle")} install --binstubs"
+        cmd << "fi"
         Util.wrap_command(cmd.join("\n"))
       end
 
       # (see Base#run_command)
       def run_command
         debug(JSON.pretty_generate(config))
-        runlist = config[:run_list].map do |recipe|
-          cmd = ["cd #{config[:root_path]};", sudo('/opt/chef/bin/itamae')]
+        lines = config[:run_list].map do |recipe|
+          cmd = ["cd #{config[:root_path]} ;"]
+          if config[:use_bundler]
+            cmd << sudo(File.join(config[:chef_omnibus_bin_dir], 'ruby'))
+            cmd << './bin/itamae'
+          else
+            cmd << sudo('/opt/chef/bin/itamae')
+          end
           cmd << 'local'
           cmd << '--ohai' if config[:with_ohai]
           cmd << config[:itamae_option]
@@ -52,8 +69,8 @@ module Kitchen
           cmd << recipe
           cmd.join(" ")
         end
-        debug(runlist.join("\n"))
-        Util.wrap_command(runlist.join("\n"))
+        debug(lines.join("\n"))
+        Util.wrap_command(lines.join("\n"))
       end
 
 
@@ -104,10 +121,10 @@ module Kitchen
       def itamae_install_function
         <<-INSTALL_ITAMAE
         cat <<EOL > /tmp/install_itamae.sh
-        %Q{#{sudo('chef-apply')} -e "chef_gem %Q{itamae} do action :upgrade end"}
-        ln -sf /opt/chef/embedded/bin/itamae /opt/chef/bin/itamae
+          #{sudo('chef-apply')} -e "chef_gem %Q{itamae} do action :upgrade end"
+          ln -sf /opt/chef/embedded/bin/itamae /opt/chef/bin/itamae
 EOL
-        #{sudo("sh")} /tmp/install_itamae.sh
+          #{sudo("sh")} /tmp/install_itamae.sh
         INSTALL_ITAMAE
       end
     end

@@ -1,5 +1,9 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.1.1
+
+- Plugin shoud work under bundler.
+
 ## 0.1.0
 
 - Use run_list instead of recipe_list.
