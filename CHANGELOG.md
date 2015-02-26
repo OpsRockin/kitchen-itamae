@@ -3,6 +3,7 @@ CHANGELOG of Itamae::Kitchen
 ## 0.1.1
 
 - Plugin shoud work under bundler.
+    - if exist Gemfile in Kitchen/, itamae run under bundler.
 
 ## 0.1.0
 
