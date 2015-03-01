@@ -1,5 +1,10 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.2.0
+
+- Feature: support attributes.
+    - attributes will merge with node_json.
+
 ## 0.1.1
 
 - Plugin shoud work under bundler.

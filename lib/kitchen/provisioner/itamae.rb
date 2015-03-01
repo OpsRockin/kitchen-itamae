@@ -19,6 +19,7 @@ module Kitchen
       expand_path_for :itamae_root
 
       default_config :node_json, nil
+      default_config :attributes, {}
       default_config :with_ohai, false
       default_config :itamae_option, nil
       default_config :use_bundler do |provisioner|
@@ -29,6 +30,7 @@ module Kitchen
       # (see Base#create_sandbox)
       def create_sandbox
         super
+        prepare_json
         FileUtils.cp_r(Dir.glob("#{config[:itamae_root]}/*"), sandbox_path)
       end
 
@@ -65,7 +67,7 @@ module Kitchen
           cmd << 'local'
           cmd << '--ohai' if config[:with_ohai]
           cmd << config[:itamae_option]
-          cmd << "-j #{config[:node_json]}" if config[:node_json]
+          cmd << "-j dna.json"
           cmd << recipe
           cmd.join(" ")
         end
@@ -83,7 +85,6 @@ module Kitchen
 
       private
       # (see ChefBase private)
-
       def download_helpers
         IO.read(
           Gem.find_files_from_load_path('../support/download_helpers.sh').first
@@ -126,6 +127,20 @@ module Kitchen
 EOL
           #{sudo("sh")} /tmp/install_itamae.sh
         INSTALL_ITAMAE
+      end
+
+      # (see ChefBase#prepare_json)
+      def prepare_json
+        dna = {}
+        dna.merge!(JSON.parse(File.read(File.join(config[:itamae_root], config[:node_json])))) if config[:node_json]
+        dna.rmerge!(config[:attributes])
+
+        info("Preparing dna.json")
+        debug("Creating dna.json from #{dna.inspect}")
+
+        File.open(File.join(sandbox_path, "dna.json"), "wb") do |file|
+          file.write(dna.to_json)
+        end
       end
     end
   end
