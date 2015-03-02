@@ -59,8 +59,8 @@ module Kitchen
         lines = config[:run_list].map do |recipe|
           cmd = ["cd #{config[:root_path]} ;"]
           if config[:use_bundler]
-            cmd << sudo(File.join(config[:chef_omnibus_bin_dir], 'ruby'))
-            cmd << './bin/itamae'
+            cmd << "export PATH=#{config[:chef_omnibus_bin_dir]}:$PATH ;"
+            cmd << sudo("./bin/itamae")
           else
             cmd << sudo('/opt/chef/bin/itamae')
           end

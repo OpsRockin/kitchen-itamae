@@ -1,5 +1,11 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.2.1
+
+- Fix: support with_ohai with plugins
+    - include `gem 'ohai'` to Gemfile
+    - on centos, shoud set ohai version same as omnibus-chef included (native extention building will fail.).
+
 ## 0.2.0
 
 - Feature: support attributes.
