@@ -68,7 +68,11 @@ module Kitchen
           cmd << '--ohai' if config[:with_ohai]
           cmd << config[:itamae_option]
           cmd << "-j dna.json"
-          cmd << recipe
+          if recipe.end_with?('.rb')
+            cmd << recipe
+          else
+            cmd << "#{recipe}.rb"
+          end
           cmd.join(" ")
         end
         debug(lines.join("\n"))

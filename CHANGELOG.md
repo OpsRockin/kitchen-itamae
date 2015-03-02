@@ -1,5 +1,9 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.2.2
+
+- experimental: append suffix `.rb` for run_list if missing.
+
 ## 0.2.1
 
 - Fix: support with_ohai with plugins
