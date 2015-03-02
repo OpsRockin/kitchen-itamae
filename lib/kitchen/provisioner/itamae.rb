@@ -48,7 +48,8 @@ module Kitchen
         debug("Prepare Bundler")
         cmd = ["cd #{config[:root_path]};"]
         cmd << "if [ -f Gemfile ] ;then"
-        cmd << "#{sudo("/opt/chef/embedded/bin/bundle")} install --binstubs"
+        cmd << "#{sudo("#{config[:chef_omnibus_bin_dir]}/bundle")} config shebang #{config[:chef_omnibus_bin_dir]}/ruby"
+        cmd << "#{sudo("#{config[:chef_omnibus_bin_dir]}/bundle")} install --binstubs"
         cmd << "fi"
         Util.wrap_command(cmd.join("\n"))
       end

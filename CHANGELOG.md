@@ -1,5 +1,10 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.2.3
+
+- Bug: Clash on centos6 with Gemfile.
+    - set bundle config shebang to chef_omnibus_bin_dir
+
 ## 0.2.2
 
 - experimental: append suffix `.rb` for run_list if missing.
