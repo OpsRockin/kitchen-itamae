@@ -1,5 +1,11 @@
 CHANGELOG of Itamae::Kitchen
 
+## 0.2.4
+
+- Compati: include chef_helper as string
+    - for test-kitchen 1.4.0
+    - It is tempolaly imprement.
+
 ## 0.2.3
 
 - Bug: Clash on centos6 with Gemfile.
