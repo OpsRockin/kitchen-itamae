@@ -4,6 +4,8 @@
 
 itamae provisioner for test-kitchen
 
+> F.Y.I. Kitchen::Provisioner::LocalShell is also useful with Itamae.
+> https://github.com/marcy-terui/kitchen-provisioner-local_shell
 
 ## Installation
 
